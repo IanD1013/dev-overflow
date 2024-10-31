@@ -399,3 +399,9 @@ code {
   height: 350px !important;
   overflow-y: auto !important;
 }
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}
