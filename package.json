@@ -13,6 +13,7 @@
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-tailwindcss": "^3.17.5",
     "next": "15.0.1",
+    "next-themes": "^0.3.0",
     "prettier": "^3.3.3",
     "react": "19.0.0-rc-69d4b800-20241021",
     "react-dom": "19.0.0-rc-69d4b800-20241021"
@@ -27,5 +28,10 @@
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
+  },
+  "packageManager": "npm@10.7.0",
+  "overrides": {
+    "react": "$react",
+    "react-dom": "$react-dom"
   }
 }
