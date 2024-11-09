@@ -1,7 +1,11 @@
 import React from "react";
 
-const QuestionCard = () => {
-  return <div>QuestionCard</div>;
+interface Props {
+  question: Question;
+}
+
+const QuestionCard = ({ question: { _id, title, tags, author, createdAt, upvotes, answers, views } }: Props) => {
+  return <div className="">QuestionCard</div>;
 };
 
 export default QuestionCard;
