@@ -24,6 +24,7 @@
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-tailwindcss": "^3.17.5",
     "lucide-react": "^0.454.0",
+    "mongoose": "^8.8.1",
     "next": "15.0.1",
     "next-auth": "^5.0.0-beta.25",
     "next-themes": "^0.3.0",
