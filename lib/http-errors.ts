@@ -30,8 +30,23 @@ export class ValidationError extends RequestError {
   }
 }
 
-class NotFoundError extends Error {}
+export class NotFoundError extends RequestError {
+  constructor(resource: string) {
+    super(404, `${resource} not found`);
+    this.name = "NotFoundError";
+  }
+}
 
-class ForbiddenError extends Error {}
+export class ForbiddenError extends RequestError {
+  constructor(message: string = "Forbidden") {
+    super(403, message);
+    this.name = "ForbiddenError";
+  }
+}
 
-class UnauthorizedError extends Error {}
+export class UnauthorizedError extends RequestError {
+  constructor(message: string = "Unauthorized") {
+    super(401, message);
+    this.name = "UnauthorizedError";
+  }
+}
