@@ -10,7 +10,7 @@ import action from "../handlers/action";
 import handleError from "../handlers/error";
 import { AskQuestionSchema } from "../validations";
 
-export async function createQuestion(params: CreateQuestionParams): Promise<ActionResponse> {
+export async function createQuestion(params: CreateQuestionParams): Promise<ActionResponse<Question>> {
   const validationResult = await action({ params, schema: AskQuestionSchema, authorize: true });
   if (validationResult instanceof Error) return handleError(validationResult) as ErrorResponse;
 
