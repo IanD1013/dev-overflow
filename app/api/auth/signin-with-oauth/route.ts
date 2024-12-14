@@ -54,6 +54,6 @@ export async function POST(request: Request) {
     await session.abortTransaction();
     return handleError(error, "api") as APIErrorResponse;
   } finally {
-    session.endSession();
+    await session.endSession();
   }
 }
