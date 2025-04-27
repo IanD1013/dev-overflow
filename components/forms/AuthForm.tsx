@@ -3,11 +3,24 @@
 import { zodResolver } from "@hookform/resolvers/zod"; // use for validation
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { DefaultValues, FieldValues, Path, SubmitHandler, useForm } from "react-hook-form"; // use to keep track of form state
+import {
+  DefaultValues,
+  FieldValues,
+  Path,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form"; // use to keep track of form state
 import { z, ZodType } from "zod";
 
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import ROUTES from "@/constants/routes";
 import { toast } from "@/hooks/use-toast";
@@ -19,7 +32,12 @@ interface AuthFormProps<T extends FieldValues> {
   formType: "SIGN_IN" | "SIGN_UP";
 }
 
-const AuthForm = <T extends FieldValues>({ schema, defaultValues, formType, onSubmit }: AuthFormProps<T>) => {
+const AuthForm = <T extends FieldValues>({
+  schema,
+  defaultValues,
+  formType,
+  onSubmit,
+}: AuthFormProps<T>) => {
   const router = useRouter();
 
   const form = useForm<z.infer<typeof schema>>({
@@ -31,10 +49,20 @@ const AuthForm = <T extends FieldValues>({ schema, defaultValues, formType, onSu
     const result = (await onSubmit(data)) as ActionResponse;
 
     if (result?.success) {
-      toast({ title: "Success", description: formType === "SIGN_IN" ? "Signed in successfully" : "Signed up successfully" });
+      toast({
+        title: "Success",
+        description:
+          formType === "SIGN_IN"
+            ? "Signed in successfully"
+            : "Signed up successfully",
+      });
       router.push(ROUTES.HOME);
     } else {
-      toast({ title: `Error ${result?.status}`, description: result?.error?.message, variant: "destructive" });
+      toast({
+        title: `Error ${result?.status}`,
+        description: result?.error?.message,
+        variant: "destructive",
+      });
     }
   };
 
@@ -42,7 +70,10 @@ const AuthForm = <T extends FieldValues>({ schema, defaultValues, formType, onSu
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="mt-10 space-y-6">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="mt-10 space-y-6"
+      >
         {Object.keys(defaultValues).map((field) => (
           <FormField
             key={field}
@@ -51,7 +82,9 @@ const AuthForm = <T extends FieldValues>({ schema, defaultValues, formType, onSu
             render={({ field }) => (
               <FormItem className="flex w-full flex-col gap-2.5">
                 <FormLabel className="paragraph-medium text-dark400_light700">
-                  {field.name === "email" ? "Email Address" : field.name.charAt(0).toUpperCase() + field.name.slice(1)}
+                  {field.name === "email"
+                    ? "Email Address"
+                    : field.name.charAt(0).toUpperCase() + field.name.slice(1)}
                 </FormLabel>
 
                 <FormControl>
@@ -59,7 +92,7 @@ const AuthForm = <T extends FieldValues>({ schema, defaultValues, formType, onSu
                     required
                     type={field.name === "password" ? "password" : "text"}
                     {...field}
-                    className="paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700 no-focus m-h-12 rounded-1.5 border"
+                    className="paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700 no-focus min-h-12 rounded-1.5 border"
                   />
                 </FormControl>
 
@@ -71,22 +104,32 @@ const AuthForm = <T extends FieldValues>({ schema, defaultValues, formType, onSu
 
         <Button
           disabled={form.formState.isSubmitting}
-          className="primary-gradient paragraph-medium rounded-2 min-h-12 w-full px-4 py-3 font-inter !text-light-900"
+          className="primary-gradient paragraph-medium min-h-12 w-full rounded-2 px-4 py-3 font-inter !text-light-900"
         >
-          {form.formState.isSubmitting ? (buttonText === "Sign In" ? "Signing In..." : "Signing Up...") : buttonText}
+          {form.formState.isSubmitting
+            ? buttonText === "Sign In"
+              ? "Signing In..."
+              : "Signing Up..."
+            : buttonText}
         </Button>
 
         {formType === "SIGN_IN" ? (
           <p>
             Don&apos;t have an account?{" "}
-            <Link href={ROUTES.SIGN_UP} className="paragraph-semibold primary-text-gradient">
+            <Link
+              href={ROUTES.SIGN_UP}
+              className="paragraph-semibold primary-text-gradient"
+            >
               Sign up
             </Link>
           </p>
         ) : (
           <p>
             Already have an account?{" "}
-            <Link href={ROUTES.SIGN_IN} className="paragraph-semibold primary-text-gradient">
+            <Link
+              href={ROUTES.SIGN_IN}
+              className="paragraph-semibold primary-text-gradient"
+            >
               Sign in
             </Link>
           </p>

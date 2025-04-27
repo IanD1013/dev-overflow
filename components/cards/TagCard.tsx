@@ -18,7 +18,16 @@ interface Props {
   handleRemove?: () => void;
 }
 
-const TagCard = ({ _id, name, questions, showCount, compact, remove, isButton, handleRemove }: Props) => {
+const TagCard = ({
+  _id,
+  name,
+  questions,
+  showCount,
+  compact,
+  remove,
+  isButton,
+  handleRemove,
+}: Props) => {
   const iconClass = getDeviconClassName(name);
 
   const handleClick = (e: React.MouseEvent) => {
@@ -45,7 +54,9 @@ const TagCard = ({ _id, name, questions, showCount, compact, remove, isButton, h
         )}
       </Badge>
 
-      {showCount && <p className="small-medium text-dark500_light700">{questions}</p>}
+      {showCount && (
+        <p className="small-medium text-dark500_light700">{questions}</p>
+      )}
     </>
   );
 
