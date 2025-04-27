@@ -9,13 +9,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 
 const filters = [
-  { name: "React", value: "react" },
-  { name: "JavaScript", value: "javascript" },
-
-  //   { name: "Newest", value: "newest" },
-  //   { name: "Popular", value: "popular" },
-  //   { name: "Unanswered", value: "unanswered" },
-  //   { name: "Recommeded", value: "recommended" },
+  { name: "Newest", value: "newest" },
+  { name: "Popular", value: "popular" },
+  { name: "Unanswered", value: "unanswered" },
+  { name: "Recommeded", value: "recommended" },
 ];
 
 const HomeFilter = () => {
@@ -25,14 +22,23 @@ const HomeFilter = () => {
   const [active, setActive] = useState(filterParams || "");
 
   const handleTypeClick = (filter: string) => {
-    let newUrl;
+    let newUrl = "";
 
     if (filter === active) {
       setActive("");
-      newUrl = removeKeysFromUrlQuery({ params: searchParams.toString(), keysToRemove: ["filter"] });
+
+      newUrl = removeKeysFromUrlQuery({
+        params: searchParams.toString(),
+        keysToRemove: ["filter"],
+      });
     } else {
       setActive(filter);
-      newUrl = formUrlQuery({ params: searchParams.toString(), key: "filter", value: filter.toLowerCase() });
+
+      newUrl = formUrlQuery({
+        params: searchParams.toString(),
+        key: "filter",
+        value: filter.toLowerCase(),
+      });
     }
 
     router.push(newUrl, { scroll: false });
