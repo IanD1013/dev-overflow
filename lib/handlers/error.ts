@@ -6,7 +6,12 @@ import logger from "../logger";
 
 export type ResponseType = "api" | "server";
 
-const formatResponse = (responseType: ResponseType, status: number, message: string, errors?: Record<string, string[]> | undefined) => {
+const formatResponse = (
+  responseType: ResponseType,
+  status: number,
+  message: string,
+  errors?: Record<string, string[]> | undefined
+) => {
   const responseContent = {
     success: false,
     error: {
@@ -15,21 +20,41 @@ const formatResponse = (responseType: ResponseType, status: number, message: str
     },
   };
 
-  return responseType === "api" ? NextResponse.json(responseContent, { status }) : { status, ...responseContent };
+  return responseType === "api"
+    ? NextResponse.json(responseContent, { status })
+    : { status, ...responseContent };
 };
 
 const handleError = (error: unknown, responseType: ResponseType = "server") => {
   if (error instanceof RequestError) {
-    logger.error({ err: error }, `${responseType.toUpperCase()} ERROR: ${error.message}`);
+    logger.error(
+      { err: error },
+      `${responseType.toUpperCase()} ERROR: ${error.message}`
+    );
 
-    return formatResponse(responseType, error.statusCode, error.message, error.errors);
+    return formatResponse(
+      responseType,
+      error.statusCode,
+      error.message,
+      error.errors
+    );
   }
 
   if (error instanceof ZodError) {
-    const validationError = new ValidationError(error.flatten().fieldErrors as Record<string, string[]>);
-    logger.error({ err: error }, `Validation Error: ${validationError.message}`);
+    const validationError = new ValidationError(
+      error.flatten().fieldErrors as Record<string, string[]>
+    );
+    logger.error(
+      { err: error },
+      `Validation Error: ${validationError.message}`
+    );
 
-    return formatResponse(responseType, validationError.statusCode, validationError.message, validationError.errors);
+    return formatResponse(
+      responseType,
+      validationError.statusCode,
+      validationError.message,
+      validationError.errors
+    );
   }
 
   if (error instanceof Error) {
