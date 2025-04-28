@@ -1,10 +1,10 @@
-import { Schema, models, model, Types, Document } from "mongoose";
+import { Document, model, models, Schema, Types } from "mongoose";
 
 export interface IVote {
   author: Types.ObjectId;
   actionId: Types.ObjectId;
-  actionType: string;
-  voteType: string;
+  actionType: "question" | "answer";
+  voteType: "upvote" | "downvote";
 }
 
 export interface IVoteDoc extends IVote, Document {}
