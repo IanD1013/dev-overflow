@@ -7,7 +7,10 @@ import dbConnect from "@/lib/mongoose";
 import { UserSchema } from "@/lib/validations";
 
 // GET /api/users/[id]
-export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(
+  _: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const { id } = await params;
   if (!id) throw new NotFoundError("User");
 
@@ -24,7 +27,10 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
 }
 
 // DELETE /api/users/[id]
-export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  _: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const { id } = await params;
   if (!id) throw new NotFoundError("User");
 
@@ -41,7 +47,10 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
 }
 
 // PUT /api/users/[id]
-export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const { id } = await params;
   if (!id) throw new NotFoundError("User");
 
@@ -51,11 +60,16 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const body = await request.json();
     const validatedData = UserSchema.partial().parse(body);
 
-    const updatedUser = await User.findByIdAndUpdate(id, validatedData, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(id, validatedData, {
+      new: true, // give the object after update
+    });
 
     if (!updatedUser) throw new NotFoundError("User");
 
-    return NextResponse.json({ success: true, data: updatedUser }, { status: 200 });
+    return NextResponse.json(
+      { success: true, data: updatedUser },
+      { status: 200 }
+    );
   } catch (error) {
     return handleError(error, "api") as APIErrorResponse;
   }
