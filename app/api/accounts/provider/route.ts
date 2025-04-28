@@ -12,8 +12,12 @@ export async function POST(request: Request) {
   try {
     await dbConnect();
 
-    const validatedData = AccountSchema.partial().safeParse({ providerAccountId });
-    if (!validatedData.success) throw new ValidationError(validatedData.error.flatten().fieldErrors);
+    const validatedData = AccountSchema.partial().safeParse({
+      providerAccountId,
+    });
+
+    if (!validatedData.success)
+      throw new ValidationError(validatedData.error.flatten().fieldErrors);
 
     const account = await Account.findOne({ providerAccountId });
     if (!account) throw new NotFoundError("Account");
