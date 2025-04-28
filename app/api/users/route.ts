@@ -23,8 +23,11 @@ export async function POST(request: Request) {
   try {
     await dbConnect();
     const body = await request.json();
+
     const validatedData = UserSchema.safeParse(body);
-    if (!validatedData.success) throw new ValidationError(validatedData.error.flatten().fieldErrors);
+    if (!validatedData.success)
+      throw new ValidationError(validatedData.error.flatten().fieldErrors);
+
     const { email, username } = validatedData.data;
 
     const existingUser = await User.findOne({ email });
