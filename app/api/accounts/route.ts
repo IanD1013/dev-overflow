@@ -12,7 +12,10 @@ export async function GET() {
 
     const accounts = await Account.find();
 
-    return NextResponse.json({ success: true, data: accounts }, { status: 200 });
+    return NextResponse.json(
+      { success: true, data: accounts },
+      { status: 200 }
+    );
   } catch (error) {
     return handleError(error, "api") as APIErrorResponse;
   }
@@ -26,12 +29,22 @@ export async function POST(request: Request) {
 
     const validatedData = AccountSchema.parse(body);
 
-    const existingAccount = await Account.findOne({ provider: validatedData.provider, providerAccountId: validatedData.providerAccountId });
-    if (existingAccount) throw new ForbiddenError("An account with the same provider already exists");
+    const existingAccount = await Account.findOne({
+      provider: validatedData.provider,
+      providerAccountId: validatedData.providerAccountId,
+    });
+
+    if (existingAccount)
+      throw new ForbiddenError(
+        "An account with the same provider already exists"
+      );
 
     const newAccount = await Account.create(validatedData);
 
-    return NextResponse.json({ success: true, data: newAccount }, { status: 201 });
+    return NextResponse.json(
+      { success: true, data: newAccount },
+      { status: 201 }
+    );
   } catch (error) {
     return handleError(error, "api") as APIErrorResponse;
   }
