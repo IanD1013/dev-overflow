@@ -1,3 +1,9 @@
+/**
+ * Sometimes we want to get a user by its email and not id. For that reason we can create this
+ * new api route. We'll specifically use this within the Auth where we want to see if a user
+ * email exists, and if so then we can get all of the user-associated accounts.
+ */
+
 import { NextResponse } from "next/server";
 
 import User from "@/database/user.model";
@@ -13,7 +19,9 @@ export async function POST(request: Request) {
     await dbConnect();
 
     const validatedData = UserSchema.partial().safeParse({ email });
-    if (!validatedData.success) throw new ValidationError(validatedData.error.flatten().fieldErrors);
+
+    if (!validatedData.success)
+      throw new ValidationError(validatedData.error.flatten().fieldErrors);
 
     const user = await User.findOne({ email });
     if (!user) throw new NotFoundError("User");
