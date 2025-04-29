@@ -19,16 +19,30 @@ export async function POST(request: Request) {
   session.startTransaction();
 
   try {
-    const validatedData = SignInWithOAuthSchema.safeParse({ provider, providerAccountId, user });
+    const validatedData = SignInWithOAuthSchema.safeParse({
+      provider,
+      providerAccountId,
+      user,
+    });
 
-    if (!validatedData.success) throw new ValidationError(validatedData.error.flatten().fieldErrors);
+    if (!validatedData.success)
+      throw new ValidationError(validatedData.error.flatten().fieldErrors);
 
     const { name, username, email, image } = user;
 
-    const slugifiedUsername = slugify(username, { lower: true, strict: true, trim: true });
+    const slugifiedUsername = slugify(username, {
+      lower: true,
+      strict: true,
+      trim: true,
+    });
+
     let existingUser = await User.findOne({ email }).session(session);
+
     if (!existingUser) {
-      [existingUser] = await User.create([{ name, username: slugifiedUsername, email, image }], { session });
+      [existingUser] = await User.create(
+        [{ name, username: slugifiedUsername, email, image }],
+        { session }
+      );
     } else {
       const updatedData: { name?: string; image?: string } = {};
 
@@ -36,15 +50,33 @@ export async function POST(request: Request) {
       if (existingUser.image !== image) updatedData.image = image;
 
       if (Object.keys(updatedData).length > 0) {
-        await User.updateOne({ _id: existingUser._id }, { $set: updatedData }).session(session);
+        await User.updateOne(
+          { _id: existingUser._id },
+          { $set: updatedData }
+        ).session(session);
       }
     }
 
     // try to find the account for this user (attached to that user id)
-    const existingAccount = await Account.findOne({ userId: existingUser._id, provider, providerAccountId }).session(session);
+    const existingAccount = await Account.findOne({
+      userId: existingUser._id,
+      provider,
+      providerAccountId,
+    }).session(session);
 
     if (!existingAccount) {
-      await Account.create([{ userId: existingUser._id, name, image, provider, providerAccountId }], { session });
+      await Account.create(
+        [
+          {
+            userId: existingUser._id,
+            name,
+            image,
+            provider,
+            providerAccountId,
+          },
+        ],
+        { session }
+      );
     }
 
     await session.commitTransaction();
