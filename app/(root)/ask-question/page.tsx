@@ -6,6 +6,7 @@ import QuestionForm from "@/components/forms/QuestionForm";
 
 const AskAQuestion = async () => {
   const session = await auth();
+
   if (!session) return redirect("/sign-in");
 
   return (
