@@ -24,11 +24,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const { data: existingAccount } = (await api.accounts.getByProvider(
             email
           )) as ActionResponse<IAccountDoc>;
+
           if (!existingAccount) return null;
 
           const { data: existingUser } = (await api.users.getById(
             existingAccount.userId.toString()
           )) as ActionResponse<IUserDoc>;
+
           if (!existingUser) return null;
 
           const isValidPassword = await bcrypt.compare(
@@ -57,7 +59,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (account) {
         const { data: existingAccount, success } =
           (await api.accounts.getByProvider(
-            account.type === "credentials" // TODO: dont understand this for now
+            account.type === "credentials"
               ? token.email!
               : account.providerAccountId
           )) as ActionResponse<IAccountDoc>;

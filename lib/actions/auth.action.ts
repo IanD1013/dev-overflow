@@ -12,10 +12,13 @@ import handleError from "../handlers/error";
 import { NotFoundError } from "../http-errors";
 import { SignInSchema, SignUpSchema } from "../validations";
 
-export async function signUpWithCredentials(params: AuthCredentials): Promise<ActionResponse> {
+export async function signUpWithCredentials(
+  params: AuthCredentials
+): Promise<ActionResponse> {
   const validationResult = await action({ params, schema: SignUpSchema });
 
-  if (validationResult instanceof Error) return handleError(validationResult) as ErrorResponse;
+  if (validationResult instanceof Error)
+    return handleError(validationResult) as ErrorResponse;
 
   const { name, username, email, password } = validationResult.params!;
 
@@ -35,8 +38,22 @@ export async function signUpWithCredentials(params: AuthCredentials): Promise<Ac
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const [newUser] = await User.create([{ username, name, email }], { session });
-    await Account.create([{ userId: newUser._id, name, provider: "credentials", providerAccountId: email, password: hashedPassword }], { session });
+    const [newUser] = await User.create([{ username, name, email }], {
+      session,
+    });
+
+    await Account.create(
+      [
+        {
+          userId: newUser._id,
+          name,
+          provider: "credentials",
+          providerAccountId: email,
+          password: hashedPassword,
+        },
+      ],
+      { session }
+    );
 
     await session.commitTransaction();
 
@@ -52,10 +69,13 @@ export async function signUpWithCredentials(params: AuthCredentials): Promise<Ac
   }
 }
 
-export async function signInWithCredentials(params: Pick<AuthCredentials, "email" | "password">): Promise<ActionResponse> {
+export async function signInWithCredentials(
+  params: Pick<AuthCredentials, "email" | "password">
+): Promise<ActionResponse> {
   const validationResult = await action({ params, schema: SignInSchema });
 
-  if (validationResult instanceof Error) return handleError(validationResult) as ErrorResponse;
+  if (validationResult instanceof Error)
+    return handleError(validationResult) as ErrorResponse;
 
   const { email, password } = validationResult.params!;
 
@@ -63,10 +83,16 @@ export async function signInWithCredentials(params: Pick<AuthCredentials, "email
     const existingUser = await User.findOne({ email });
     if (!existingUser) throw new NotFoundError("User");
 
-    const existingAccount = await Account.findOne({ provider: "credentials", providerAccountId: email });
+    const existingAccount = await Account.findOne({
+      provider: "credentials",
+      providerAccountId: email,
+    });
     if (!existingAccount) throw new NotFoundError("Account");
 
-    const passwordMatch = await bcrypt.compare(password, existingAccount.password);
+    const passwordMatch = await bcrypt.compare(
+      password,
+      existingAccount.password
+    );
     if (!passwordMatch) throw new Error("Password does not match");
 
     await signIn("credentials", { email, password, redirect: false });
