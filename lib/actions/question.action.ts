@@ -8,11 +8,24 @@ import Tag, { ITagDoc } from "@/database/tag.model";
 
 import action from "../handlers/action";
 import handleError from "../handlers/error";
-import { AskQuestionSchema, EditQuestionSchema, GetQuestionSchema, PaginatedSearchParamsSchema } from "../validations";
+import {
+  AskQuestionSchema,
+  EditQuestionSchema,
+  GetQuestionSchema,
+  PaginatedSearchParamsSchema,
+} from "../validations";
 
-export async function createQuestion(params: CreateQuestionParams): Promise<ActionResponse<Question>> {
-  const validationResult = await action({ params, schema: AskQuestionSchema, authorize: true });
-  if (validationResult instanceof Error) return handleError(validationResult) as ErrorResponse;
+export async function createQuestion(
+  params: CreateQuestionParams
+): Promise<ActionResponse<Question>> {
+  const validationResult = await action({
+    params,
+    schema: AskQuestionSchema,
+    authorize: true,
+  });
+
+  if (validationResult instanceof Error)
+    return handleError(validationResult) as ErrorResponse;
 
   const { title, content, tags } = validationResult.params!;
   const userId = validationResult?.session?.user?.id;
@@ -21,7 +34,12 @@ export async function createQuestion(params: CreateQuestionParams): Promise<Acti
   session.startTransaction();
 
   try {
-    const [question] = await Question.create([{ title, content, author: userId }], { session }); // create a new question document
+    // create a new question document
+    const [question] = await Question.create(
+      [{ title, content, author: userId }],
+      { session }
+    );
+
     if (!question) throw new Error("Failed to create question");
 
     const tagIds: mongoose.Types.ObjectId[] = [];
@@ -35,11 +53,19 @@ export async function createQuestion(params: CreateQuestionParams): Promise<Acti
       );
 
       tagIds.push(existingTag._id);
-      tagQuestionDocuments.push({ tag: existingTag._id, question: question._id });
+      tagQuestionDocuments.push({
+        tag: existingTag._id,
+        question: question._id,
+      });
     }
 
     await TagQuestion.insertMany(tagQuestionDocuments, { session });
-    await Question.findByIdAndUpdate(question._id, { $push: { tags: { $each: tagIds } } }, { session });
+
+    await Question.findByIdAndUpdate(
+      question._id,
+      { $push: { tags: { $each: tagIds } } },
+      { session }
+    );
 
     await session.commitTransaction();
 
@@ -52,9 +78,16 @@ export async function createQuestion(params: CreateQuestionParams): Promise<Acti
   }
 }
 
-export async function editQuestion(params: EditQuestionParams): Promise<ActionResponse<IQuestionDoc>> {
-  const validationResult = await action({ params, schema: EditQuestionSchema, authorize: true });
-  if (validationResult instanceof Error) return handleError(validationResult) as ErrorResponse;
+export async function editQuestion(
+  params: EditQuestionParams
+): Promise<ActionResponse<IQuestionDoc>> {
+  const validationResult = await action({
+    params,
+    schema: EditQuestionSchema,
+    authorize: true,
+  });
+  if (validationResult instanceof Error)
+    return handleError(validationResult) as ErrorResponse;
 
   const { title, content, tags, questionId } = validationResult.params!;
   const userId = validationResult?.session?.user?.id;
@@ -73,8 +106,16 @@ export async function editQuestion(params: EditQuestionParams): Promise<ActionRe
       await question.save({ session });
     }
 
-    const tagsToAdd = tags.filter((tag) => !question.tags.some((t: ITagDoc) => t.name.toLowerCase().includes(tag.toLowerCase())));
-    const tagsToRemove = question.tags.filter((tag: ITagDoc) => !tags.some((t) => t.toLowerCase() === tag.name.toLowerCase()));
+    const tagsToAdd = tags.filter(
+      (tag) =>
+        !question.tags.some((t: ITagDoc) =>
+          t.name.toLowerCase().includes(tag.toLowerCase())
+        )
+    );
+    const tagsToRemove = question.tags.filter(
+      (tag: ITagDoc) =>
+        !tags.some((t) => t.toLowerCase() === tag.name.toLowerCase())
+    );
 
     const newTagDocuments = [];
     if (tagsToAdd.length > 0) {
@@ -95,13 +136,26 @@ export async function editQuestion(params: EditQuestionParams): Promise<ActionRe
     if (tagsToRemove.length > 0) {
       const tagIdsToRemove = tagsToRemove.map((tag: ITagDoc) => tag._id);
 
-      await Tag.updateMany({ _id: { $in: tagIdsToRemove } }, { $inc: { questions: -1 } }, { session });
-      await TagQuestion.deleteMany({ tag: { $in: tagIdsToRemove }, question: questionId }, { session });
+      await Tag.updateMany(
+        { _id: { $in: tagIdsToRemove } },
+        { $inc: { questions: -1 } },
+        { session }
+      );
+      await TagQuestion.deleteMany(
+        { tag: { $in: tagIdsToRemove }, question: questionId },
+        { session }
+      );
 
-      question.tags = question.tags.filter((tag: mongoose.Types.ObjectId) => !tagIdsToRemove.some((id: mongoose.Types.ObjectId) => id.equals(tag._id)));
+      question.tags = question.tags.filter(
+        (tag: mongoose.Types.ObjectId) =>
+          !tagIdsToRemove.some((id: mongoose.Types.ObjectId) =>
+            id.equals(tag._id)
+          )
+      );
     }
 
-    if (newTagDocuments.length > 0) await TagQuestion.insertMany(newTagDocuments, { session });
+    if (newTagDocuments.length > 0)
+      await TagQuestion.insertMany(newTagDocuments, { session });
 
     await question.save({ session });
     await session.commitTransaction();
@@ -123,9 +177,16 @@ export async function editQuestion(params: EditQuestionParams): Promise<ActionRe
 // It's a Direct Invocation. When you use a Server Action in a Server Component, you are directly calling the
 // function on the server. There is no HTTP request involved at all because both the Server Component and the
 // Server Action are executing in the same server environment.
-export async function getQuestion(params: GetQuestionParams): Promise<ActionResponse<Question>> {
-  const validationResult = await action({ params, schema: GetQuestionSchema, authorize: true });
-  if (validationResult instanceof Error) return handleError(validationResult) as ErrorResponse;
+export async function getQuestion(
+  params: GetQuestionParams
+): Promise<ActionResponse<Question>> {
+  const validationResult = await action({
+    params,
+    schema: GetQuestionSchema,
+    authorize: true,
+  });
+  if (validationResult instanceof Error)
+    return handleError(validationResult) as ErrorResponse;
 
   const { questionId } = validationResult.params!;
 
@@ -139,9 +200,15 @@ export async function getQuestion(params: GetQuestionParams): Promise<ActionResp
   }
 }
 
-export async function getQuestions(params: PaginatedSearchParams): Promise<ActionResponse<{ questions: Question[]; isNext: boolean }>> {
-  const validationResult = await action({ params, schema: PaginatedSearchParamsSchema });
-  if (validationResult instanceof Error) return handleError(validationResult) as ErrorResponse;
+export async function getQuestions(
+  params: PaginatedSearchParams
+): Promise<ActionResponse<{ questions: Question[]; isNext: boolean }>> {
+  const validationResult = await action({
+    params,
+    schema: PaginatedSearchParamsSchema,
+  });
+  if (validationResult instanceof Error)
+    return handleError(validationResult) as ErrorResponse;
 
   const { page = 1, pageSize = 10, query, filter } = params;
   const skip = (Number(page) - 1) * pageSize;
@@ -154,7 +221,10 @@ export async function getQuestions(params: PaginatedSearchParams): Promise<Actio
   }
 
   if (query) {
-    filterQuery.$or = [{ title: { $regex: new RegExp(query, "i") } }, { content: { $regex: new RegExp(query, "i") } }];
+    filterQuery.$or = [
+      { title: { $regex: new RegExp(query, "i") } },
+      { content: { $regex: new RegExp(query, "i") } },
+    ];
   }
 
   let sortCriteria = {};
@@ -187,7 +257,10 @@ export async function getQuestions(params: PaginatedSearchParams): Promise<Actio
 
     const isNext = totalQuestions > skip + questions.length;
 
-    return { success: true, data: { questions: JSON.parse(JSON.stringify(questions)), isNext } };
+    return {
+      success: true,
+      data: { questions: JSON.parse(JSON.stringify(questions)), isNext },
+    };
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
