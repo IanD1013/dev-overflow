@@ -1,0 +1,38 @@
+{
+  "1": {
+    "id": 1,
+    "name": "Fix Next.js API Route bug",
+    "status": "open",
+    "type": "bug"
+  },
+  "2": {
+    "id": 2,
+    "name": "Add dark mode",
+    "status": "closed",
+    "type": "feature"
+  },
+  "3": {
+    "id": 3,
+    "name": "Improve performance",
+    "status": "open",
+    "type": "feature"
+  },
+  "4": {
+    "id": 4,
+    "name": "Implement SEO and Meta tags",
+    "status": "open",
+    "type": "feature"
+  },
+  "5": {
+    "id": 5,
+    "name": "Fix hydration warnings",
+    "status": "open",
+    "type": "bug"
+  },
+  "6": {
+    "id": 6,
+    "name": "say",
+    "status": "open",
+    "type": "ok"
+  }
+}
