@@ -2,7 +2,7 @@
 
 import mongoose, { FilterQuery } from "mongoose";
 
-import Question, { IQuestionDoc } from "@/database/question.model";
+import Question from "@/database/question.model";
 import TagQuestion from "@/database/tag-question.model";
 import Tag, { ITagDoc } from "@/database/tag.model";
 
@@ -80,12 +80,13 @@ export async function createQuestion(
 
 export async function editQuestion(
   params: EditQuestionParams
-): Promise<ActionResponse<IQuestionDoc>> {
+): Promise<ActionResponse<Question>> {
   const validationResult = await action({
     params,
     schema: EditQuestionSchema,
     authorize: true,
   });
+
   if (validationResult instanceof Error)
     return handleError(validationResult) as ErrorResponse;
 
@@ -106,17 +107,20 @@ export async function editQuestion(
       await question.save({ session });
     }
 
+    // Determine tags to add and remove
     const tagsToAdd = tags.filter(
       (tag) =>
-        !question.tags.some((t: ITagDoc) =>
-          t.name.toLowerCase().includes(tag.toLowerCase())
+        !question.tags.some(
+          (t: ITagDoc) => t.name.toLowerCase() === tag.toLowerCase()
         )
     );
+
     const tagsToRemove = question.tags.filter(
       (tag: ITagDoc) =>
         !tags.some((t) => t.toLowerCase() === tag.name.toLowerCase())
     );
 
+    // Add new tags
     const newTagDocuments = [];
     if (tagsToAdd.length > 0) {
       for (const tag of tagsToAdd) {
@@ -133,6 +137,7 @@ export async function editQuestion(
       }
     }
 
+    // Remove tags
     if (tagsToRemove.length > 0) {
       const tagIdsToRemove = tagsToRemove.map((tag: ITagDoc) => tag._id);
 
@@ -185,6 +190,7 @@ export async function getQuestion(
     schema: GetQuestionSchema,
     authorize: true,
   });
+
   if (validationResult instanceof Error)
     return handleError(validationResult) as ErrorResponse;
 

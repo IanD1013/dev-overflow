@@ -109,7 +109,7 @@ const QuestionForm = ({ question, isEdit = false }: Params) => {
           });
         }
 
-        return;
+        return; // make sure to return after handling edit
       }
 
       const result = await createQuestion(data);
