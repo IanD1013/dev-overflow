@@ -18,11 +18,8 @@ async function Home() {
       {result.length > 0 ? (
         <ul className="flex w-full flex-col gap-5">
           {result.map((ticket) => (
-            <li
-              key={ticket.id}
-              className="flex w-full justify-between gap-5 rounded-md p-5 shadow-md"
-            >
-              <Link href={`/ticket/update/${ticket.id}`} className="flex-1">
+            <li key={ticket.id} className="flex w-full justify-between gap-5 rounded-md p-5 shadow-md">
+              <Link href={`/server-action-demo/ticket/update/${ticket.id}`} className="flex-1">
                 <p>
                   {ticket.name}
                   <br />
@@ -54,10 +51,7 @@ async function Home() {
         <Link href="server-action-demo/ticket/create" className="text-blue-700">
           Create a new ticket
         </Link>
-        <Link
-          href="server-action-demo/ticket/create/client"
-          className="text-blue-700"
-        >
+        <Link href="server-action-demo/ticket/create/client" className="text-blue-700">
           Create a new ticket (client)
         </Link>
       </div>

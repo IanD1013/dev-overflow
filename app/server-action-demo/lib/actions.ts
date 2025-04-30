@@ -10,9 +10,7 @@ export async function createTicket(formData: FormData) {
   const type = formData.get("type") as string;
 
   const tickets = readFile();
-  const id = Object.keys(tickets).length
-    ? Math.max(...Object.keys(tickets).map(Number)) + 1
-    : 1;
+  const id = Object.keys(tickets).length ? Math.max(...Object.keys(tickets).map(Number)) + 1 : 1;
 
   tickets[id] = { id, name, status: "open", type };
   writeFile(tickets);
@@ -33,7 +31,7 @@ export async function updateTicket(id: number, formData: FormData) {
   tickets[id] = { ...tickets[id], name, type, status };
   writeFile(tickets);
 
-  revalidatePath("/");
+  revalidatePath("/server-action-demo");
 }
 
 export async function deleteTicket(id: number) {
