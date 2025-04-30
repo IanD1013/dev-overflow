@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { auth } from "@/auth";
 import QuestionCard from "@/components/cards/QuestionCard";
 import DataRenderer from "@/components/DataRenderer";
 import HomeFilter from "@/components/filters/HomeFilter";
@@ -15,9 +14,6 @@ interface SearchParams {
 }
 
 const Home = async ({ searchParams }: SearchParams) => {
-  const session = await auth();
-  console.log("session", session);
-
   const { page, pageSize, query, filter } = await searchParams;
 
   const { success, data, error } = await getQuestions({
