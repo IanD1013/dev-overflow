@@ -1,3 +1,10 @@
+/**
+ * This is a server action handler
+ * -> adding authentication checks
+ * -> validation filters
+ * -> proper error handling
+ */
+
 "use server";
 
 import { Session } from "next-auth";
@@ -18,7 +25,6 @@ type ActionOptions<T> = {
 // 2. checking whether the user is authorized
 // 3. connecting to the database
 // 4. returning the params and session
-
 async function action<T>({ params, schema, authorize = false }: ActionOptions<T>) {
   if (schema && params) {
     try {
