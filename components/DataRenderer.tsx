@@ -1,7 +1,9 @@
-import { DEFAULT_EMPTY, DEFAULT_ERROR } from "@/constants/states";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+
+import { DEFAULT_EMPTY, DEFAULT_ERROR } from "@/constants/states";
+
 import { Button } from "./ui/button";
 
 interface Props<T> {
@@ -36,24 +38,51 @@ interface StateSkeletonProps {
   };
 }
 
-const StateSkeleton = ({ image, title, message, button }: StateSkeletonProps) => (
+const StateSkeleton = ({
+  image,
+  title,
+  message,
+  button,
+}: StateSkeletonProps) => (
   <div className="mt-16 flex w-full flex-col items-center justify-center sm:mt-36">
     <>
-      <Image src={image.dark} alt={image.alt} width={270} height={200} className="hidden object-contain dark:block" />
-      <Image src={image.light} alt={image.alt} width={270} height={200} className="block object-contain dark:hidden" />
+      <Image
+        src={image.dark}
+        alt={image.alt}
+        width={270}
+        height={200}
+        className="hidden object-contain dark:block"
+      />
+      <Image
+        src={image.light}
+        alt={image.alt}
+        width={270}
+        height={200}
+        className="block object-contain dark:hidden"
+      />
     </>
 
     <h2 className="h2-bold text-dark200_light900 mt-8">{title}</h2>
-    <p className="body-regular text-dark500_light700 my-3.5 max-w-md text-center">{message}</p>
+    <p className="body-regular text-dark500_light700 my-3.5 max-w-md text-center">
+      {message}
+    </p>
     {button && (
       <Link href={button.href}>
-        <Button className="paragraph-medium mt-5 min-h-[46px] rounded-lg bg-primary-500 px-4 py-3 text-light-900 hover:bg-primary-500">{button.text}</Button>
+        <Button className="paragraph-medium mt-5 min-h-[46px] rounded-lg bg-primary-500 px-4 py-3 text-light-900 hover:bg-primary-500">
+          {button.text}
+        </Button>
       </Link>
     )}
   </div>
 );
 
-const DataRenderer = <T,>({ success, error, data, empty = DEFAULT_EMPTY, render }: Props<T>) => {
+const DataRenderer = <T,>({
+  success,
+  error,
+  data,
+  empty = DEFAULT_EMPTY,
+  render,
+}: Props<T>) => {
   if (!success) {
     return (
       <StateSkeleton
@@ -63,7 +92,11 @@ const DataRenderer = <T,>({ success, error, data, empty = DEFAULT_EMPTY, render 
           alt: "Error state illustration",
         }}
         title={error?.message || DEFAULT_ERROR.title}
-        message={error?.details ? JSON.stringify(error.details, null, 2) : DEFAULT_ERROR.message}
+        message={
+          error?.details
+            ? JSON.stringify(error.details, null, 2)
+            : DEFAULT_ERROR.message
+        }
         button={DEFAULT_ERROR.button}
       />
     );
