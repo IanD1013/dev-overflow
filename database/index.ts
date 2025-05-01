@@ -8,4 +8,14 @@ import Tag from "./tag.model";
 import User from "./user.model";
 import Vote from "./vote.model";
 
-export { Account, Answer, Collection, Interaction, Question, TagQuestion, Tag, User, Vote };
+export {
+  Account,
+  Answer,
+  Collection,
+  Interaction,
+  Question,
+  TagQuestion,
+  Tag,
+  User,
+  Vote,
+};

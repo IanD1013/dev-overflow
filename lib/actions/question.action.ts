@@ -213,6 +213,7 @@ export async function getQuestions(
     params,
     schema: PaginatedSearchParamsSchema,
   });
+
   if (validationResult instanceof Error)
     return handleError(validationResult) as ErrorResponse;
 
@@ -222,6 +223,7 @@ export async function getQuestions(
 
   const filterQuery: FilterQuery<typeof Question> = {};
 
+  // Skip recommended for now, will come back to it later
   if (filter === "recommended") {
     return { success: true, data: { questions: [], isNext: false } };
   }
@@ -234,6 +236,7 @@ export async function getQuestions(
   }
 
   let sortCriteria = {};
+
   switch (filter) {
     case "newest":
       sortCriteria = { createdAt: -1 };
