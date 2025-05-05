@@ -27,7 +27,9 @@ const QuestionDetails = async ({ params, searchParams }: RouteParams) => {
     await incrementViews({ questionId: id });
   });
 
-  if (!success || !question) return redirect("/404");
+  if (!success) return redirect("/sign-in");
+
+  if (!question) return redirect("/404");
 
   const {
     success: areAnswersLoaded,
