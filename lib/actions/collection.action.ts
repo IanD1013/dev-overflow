@@ -175,6 +175,7 @@ export async function getSavedQuestions(
       });
     }
 
+    // Calculate total count
     const totalCountResult = await Collection.aggregate([
       ...pipeline,
       { $count: "count" },
@@ -183,12 +184,14 @@ export async function getSavedQuestions(
     const totalCount =
       totalCountResult.length > 0 ? totalCountResult[0].count : 0;
 
+    // Add sorting, pagination, and projection to the pipeline
     pipeline.push({ $sort: sortCriteria }, { $skip: skip }, { $limit: limit });
     pipeline.push({ $project: { question: 1, author: 1 } });
 
     const questions = await Collection.aggregate(pipeline);
 
-    const isNext = totalCount.count > skip + questions.length;
+    // Calculate `isNext`
+    const isNext = skip + questions.length < totalCount;
 
     return {
       success: true,
