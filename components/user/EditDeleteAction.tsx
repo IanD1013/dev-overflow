@@ -1,5 +1,8 @@
 "use client";
 
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,8 +15,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "@/hooks/use-toast";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { deleteQuestion } from "@/lib/actions/question.action";
 
 interface Props {
   type: string;
@@ -29,11 +31,12 @@ const EditDeleteAction = ({ type, itemId }: Props) => {
 
   const handleDelete = async () => {
     if (type === "Question") {
-      // Call API to delete question
+      await deleteQuestion({ questionId: itemId });
 
       toast({
-        title: "Question deleted",
-        description: "Your question has been deleted successfully.",
+        title: "Question Deleted",
+        variant: "destructive",
+        description: "Your question has been successfully deleted.",
       });
     } else if (type === "Answer") {
       // Call API to delete answer
@@ -47,7 +50,7 @@ const EditDeleteAction = ({ type, itemId }: Props) => {
 
   return (
     <div
-      className={`flex items-center justify-end gap-3 max-sm:w-full ${type === "Answer" && "gap-0 justify-center"}`}
+      className={`flex items-center justify-end gap-3 max-sm:w-full ${type === "Answer" && "justify-center gap-0"}`}
     >
       {type === "Question" && (
         <Image
