@@ -215,3 +215,7 @@ export const GetUsersTagsSchema = z.object({
 export const DeleteQuestionSchema = z.object({
   questionId: z.string().min(1, "Question ID is required"),
 });
+
+export const DeleteAnswerSchema = z.object({
+  answerId: z.string().min(1, "Answer ID is required"),
+});
