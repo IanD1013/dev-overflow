@@ -1,25 +1,24 @@
-import dayjs from "dayjs";
-import Link from "next/link";
-import { notFound } from "next/navigation";
-
 import { auth } from "@/auth";
-import AnswerCard from "@/components/cards/AnswerCard";
-import QuestionCard from "@/components/cards/QuestionCard";
-import TagCard from "@/components/cards/TagCard";
-import DataRenderer from "@/components/DataRenderer";
-import Pagination from "@/components/Pagination";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ProfileLink from "@/components/user/ProfileLink";
-import Stats from "@/components/user/Stats";
 import UserAvatar from "@/components/UserAvatar";
-import { EMPTY_ANSWERS, EMPTY_QUESTION, EMPTY_TAGS } from "@/constants/states";
 import {
   getUser,
   getUserQuestions,
   getUsersAnswers,
   getUserTopTags,
 } from "@/lib/actions/user.action";
+import { notFound } from "next/navigation";
+import dayjs from "dayjs";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import Stats from "@/components/user/Stats";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import DataRenderer from "@/components/DataRenderer";
+import { EMPTY_ANSWERS, EMPTY_QUESTION, EMPTY_TAGS } from "@/constants/states";
+import QuestionCard from "@/components/cards/QuestionCard";
+import Pagination from "@/components/Pagination";
+import AnswerCard from "@/components/cards/AnswerCard";
+import TagCard from "@/components/cards/TagCard";
 
 const Profile = async ({ params, searchParams }: RouteParams) => {
   const { id } = await params;
@@ -162,7 +161,13 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
               render={(questions) => (
                 <div className="flex w-full flex-col gap-6">
                   {questions.map((question) => (
-                    <QuestionCard key={question._id} question={question} />
+                    <QuestionCard
+                      key={question._id}
+                      question={question}
+                      showActionBtns={
+                        loggedInUser?.user?.id === question.author._id
+                      }
+                    />
                   ))}
                 </div>
               )}
@@ -178,7 +183,7 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
               success={userAnswersSuccess}
               error={userAnswersError}
               render={(answers) => (
-                <div className="flex w-full flex-col gap-6">
+                <div className="flex w-full flex-col gap-10">
                   {answers.map((answer) => (
                     <AnswerCard
                       key={answer._id}
@@ -186,6 +191,9 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
                       content={answer.content.slice(0, 27)}
                       containerClasses="card-wrapper rounded-[10px] px-7 py-9 sm:px-11"
                       showReadMore
+                      showActionBtns={
+                        loggedInUser?.user?.id === answer.author._id
+                      }
                     />
                   ))}
                 </div>
