@@ -228,3 +228,8 @@ export const CreateInteractionSchema = z.object({
   actionId: z.string().min(1),
   authorId: z.string().min(1),
 });
+
+export const GlobalSearchSchema = z.object({
+  query: z.string(),
+  type: z.string().nullable().optional(),
+});
