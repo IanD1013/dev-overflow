@@ -38,8 +38,6 @@ DevOverflow is a modern developer community platform inspired by Stack Overflow,
 - **Form Handling**: React Hook Form with Zod validation
 - **AI Integration**: OpenAI API
 - **Rich Text Editor**: MDX Editor
-- **State Management**: React Context
-- **UI Components**: Radix UI primitives
 
 ## 📁 Project Structure
 
